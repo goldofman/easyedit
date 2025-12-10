@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-// Визначаємо регіон
 const S3_REGION = process.env.AWS_REGION ?? "eu-north-1"; 
 const BUCKET = process.env.NEXT_PUBLIC_S3_BUCKET;
 

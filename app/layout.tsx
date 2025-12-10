@@ -20,8 +20,7 @@ const syneMono = Syne_Mono({
 });
 
 const title = "EdMyPic - Edit your pictures with an AI using prompts";
-const description = "The easiest way to edit images with AI in one prompt.";
-const keywords = "AI image editing, change your pictures with text prompts, AI photo editor";
+const description = "The easiest way to edit images with AI in one prompt. Try it now!";
 const url = "https://edmypic.com/";
 const ogimage = "https://edmypic.com/og-image.png";
 const sitename = "edmypic.com";
@@ -37,7 +36,6 @@ export const metadata: Metadata = {
     images: [ogimage],
     title,
     description,
-    keywords,
     url: url,
     siteName: sitename,
     locale: "en_US",

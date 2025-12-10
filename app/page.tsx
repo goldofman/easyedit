@@ -250,8 +250,9 @@ export default function Home() {
                         });
 
                         if (generation.success) {
-                          const genWidth = generation.width ?? originalImageData.width;
-                          const genHeight = generation.height ?? originalImageData.height;
+                          // Якщо API не повертає розміри, використовуємо оригінальні
+                          const genWidth = originalImageData.width;
+                          const genHeight = originalImageData.height;
 
                           setImageData({ width: genWidth, height: genHeight });
 
@@ -268,7 +269,6 @@ export default function Home() {
                           ]);
                           setActiveImageUrl(generation.url);
                           setPrompt("");
-                          // НЕ оновлюєш originalSourceUrl — залишаємо оригінал!
                         } else {
                           toast(generation.error);
                         }
