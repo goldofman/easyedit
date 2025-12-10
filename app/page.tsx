@@ -46,12 +46,17 @@ export default function Home() {
     | "black-forest-labs/FLUX.1-kontext-dev"
     | "black-forest-labs/FLUX.1-kontext-pro"
   >("black-forest-labs/FLUX.1-kontext-dev");
-  const [setHasApiKey] = useState(false);
+  const [hasApiKey, setHasApiKey] = useState(false);
   const [originalSourceUrl, setOriginalSourceUrl] = useState<string | null>(null);
 
   const activeImage = useMemo(
     () => images.find((i) => i.url === activeImageUrl),
     [images, activeImageUrl],
+  );
+
+  const adjustedImageDimensions = getAdjustedDimensions(
+    imageData.width,
+    imageData.height,
   );
 
   useEffect(() => {

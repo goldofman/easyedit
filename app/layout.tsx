@@ -20,6 +20,7 @@ const syneMono = Syne_Mono({
 
 const title = "EdMyPic - Edit your pictures with an AI using prompts";
 const description = "The easiest way to edit images with AI in one prompt.";
+const keywords = "AI image editing, change your pictures with text prompts, AI photo editor";
 const url = "https://edmypic.com/";
 const ogimage = "https://edmypic.com/og-image.png";
 const sitename = "edmypic.com";
@@ -35,6 +36,7 @@ export const metadata: Metadata = {
     images: [ogimage],
     title,
     description,
+    keywords,
     url: url,
     siteName: sitename,
     locale: "en_US",
@@ -65,7 +67,6 @@ export default function RootLayout({
       <body className="flex min-h-screen w-full flex-col antialiased">
         <header className="relative flex p-4 text-center text-white">
           <a
-            target="_blank"
             rel="noopener noreferrer"
             href="/"
             className="absolute left-1/2 flex grow -translate-x-1/2 items-center gap-2 text-lg max-md:hidden"
