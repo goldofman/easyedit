@@ -3,10 +3,7 @@ import { Kulim_Park, Syne_Mono } from "next/font/google";
 import "./globals.css";
 import { Logo } from "./Logo";
 import PlausibleProvider from "next-plausible";
-import { UserAPIKey } from "./UserAPIKey";
 import { Toaster } from "@/components/ui/sonner";
-import GitHub from "./components/GitHubIcon";
-import XformerlyTwitter from "./components/TwitterIcon";
 import { PlusIcon } from "./components/PlusIcon";
 
 const kulimPark = Kulim_Park({
@@ -22,8 +19,7 @@ const syneMono = Syne_Mono({
 });
 
 const title = "EdMyPic - Edit your pictures with an AI using prompts";
-const description = "AI image editing, change your pictures with text prompts, AI photo editor.";
-const keywords = "The easiest way to edit images with AI in one prompt";
+const description = "The easiest way to edit images with AI in one prompt.";
 const url = "https://edmypic.com/";
 const ogimage = "https://edmypic.com/og-image.png";
 const sitename = "edmypic.com";
