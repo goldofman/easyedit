@@ -19,12 +19,12 @@ const schema = z.object({
       "black-forest-labs/FLUX.1-kontext-dev",
       "black-forest-labs/FLUX.1-kontext-pro",
     ])
-    .default("black-forest-labs/FLUX.1-kontext-dev"),
+    .default("black-forest-labs/FLUX.1-kontext-pro"),
 });
 
 export async function generateImage(
   unsafeData: z.infer<typeof schema>,
-): Promise<{ success: true; url: string } | { success: false; error: string }> {
+): Promise<{ success: true; url: string } | { success: false, error: string }> {
   const { imageUrl, prompt, width, height, userAPIKey, model } =
     schema.parse(unsafeData);
 
@@ -44,20 +44,24 @@ export async function generateImage(
   const together = getTogether(userAPIKey);
   const adjustedDimensions = getAdjustedDimensions(width, height);
 
-  let url;
+  const finalWidth = Math.max(64, Math.min(1792, adjustedDimensions.width));
+  const finalHeight = Math.max(64, Math.min(1792, adjustedDimensions.height));
+
+  console.log("generateImage: using dimensions", finalWidth, finalHeight, "imageUrl:", imageUrl);
+
+  let url: string | undefined;
   try {
     const json = await together.images.create({
       model,
       prompt,
-      width: adjustedDimensions.width,
-      height: adjustedDimensions.height,
+      width: finalWidth,
+      height: finalHeight,
       image_url: imageUrl,
     });
 
     url = json.data[0].url;
   } catch (e: any) {
     console.log(e);
-    // if the error contains "403", then it's a rate limit error
     if (e.toString().includes("403")) {
       return {
         success: false,

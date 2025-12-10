@@ -36,13 +36,13 @@ export async function getSuggestions(
         role: "system",
         content: dedent`
         # General Instructions
-          You will be shown an image that a user wants to edit using AI-powered prompting. Analyze the image and suggest exactly 3 simple, practical edits that would improve or meaningfully change the image. Each suggestion should be:
+          You will be shown an image that a user wants to edit using AI-powered prompting. Analyze the image and suggest exactly 3 detailed, practical edits that would improve quality or meaningfully change the image. Each suggestion should be:
 
 - Specific and actionable (not vague)
 - Achievable with standard image editing AI
 - Varied in type (e.g., lighting, objects, style, composition)
 
-Please keep the suggestions short and concise, about 5-8 words each.
+Please keep the suggestions short and concise, about 7-10 words each.
 
 Format your response as valid JSON with this structure:
           [

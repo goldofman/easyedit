@@ -2,19 +2,29 @@ import Image from "next/image";
 
 const sampleImages = [
   {
-    url: "https://napkinsdev.s3.us-east-1.amazonaws.com/next-s3-uploads/39f8ea0e-000f-49bc-9f52-ed1cfb4e4230/free-photo-of-casual-man-working-on-laptop-in-cozy-cafe.jpeg",
-    height: 1752,
-    width: 986,
+    url: "https://my-1st-aws-bucket-for-files-storage.s3.eu-north-1.amazonaws.com/edmypic/example/ai-generated-8817541_1280.png",
+    height: 1280,
+    width: 717,
   },
   {
-    url: "https://napkinsdev.s3.us-east-1.amazonaws.com/next-s3-uploads/4e742e29-ddbc-4493-b2a3-95c15d8d0a2c/image-(6).png",
-    height: 1365,
-    width: 2048,
+    url: "https://my-1st-aws-bucket-for-files-storage.s3.eu-north-1.amazonaws.com/edmypic/example/Blue+Macaron+Grid.png",
+    height: 1200,
+    width: 1200,
   },
   {
-    url: "https://napkinsdev.s3.us-east-1.amazonaws.com/next-s3-uploads/8dcc41ed-b7e4-473d-b30f-19c8790a4293/style_transfer_1.png",
-    width: 1408,
-    height: 792,
+    url: "https://my-1st-aws-bucket-for-files-storage.s3.eu-north-1.amazonaws.com/edmypic/example/Close-up+of+Orchid+Flower.png",
+    width: 715,
+    height: 1200,
+  },
+  {
+    url: "https://my-1st-aws-bucket-for-files-storage.s3.eu-north-1.amazonaws.com/edmypic/example/Portrait+in+Red+and+Yellow.png",
+    width: 900,
+    height: 1200,
+  },
+  {
+    url: "https://my-1st-aws-bucket-for-files-storage.s3.eu-north-1.amazonaws.com/edmypic/example/woman-9187786_1280.jpg",
+    width: 1280,
+    height: 875,
   },
 ];
 
@@ -41,7 +51,7 @@ export function SampleImages({
         {sampleImages.map((sample) => (
           <button
             key={sample.url}
-            className="group relative shrink-0 cursor-pointer overflow-hidden rounded-lg bg-gray-700"
+            className="group relative shrink-0 cursor-pointer overflow-hidden rounded-lg bg-gray-900"
             onClick={() => {
               onSelect({
                 url: sample.url,

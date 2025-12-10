@@ -1,6 +1,5 @@
 "use client";
 
-import Image, { getImageProps } from "next/image";
 import { useRef, useState, useTransition, useEffect, useMemo } from "react";
 import { generateImage } from "./actions";
 import { ImageUploader } from "./ImageUploader";
@@ -28,9 +27,13 @@ function slugifyPrompt(prompt?: string): string {
 
 export default function Home() {
   const [images, setImages] = useState<
-    { url: string; version: number; prompt?: string }[]
+    { url: string; version: number; prompt?: string; width?: number; height?: number }[]
   >([]);
   const [imageData, setImageData] = useState<{
+    width: number;
+    height: number;
+  }>({ width: 1024, height: 768 });
+  const [originalImageData, setOriginalImageData] = useState<{
     width: number;
     height: number;
   }>({ width: 1024, height: 768 });
@@ -44,6 +47,7 @@ export default function Home() {
     | "black-forest-labs/FLUX.1-kontext-pro"
   >("black-forest-labs/FLUX.1-kontext-dev");
   const [hasApiKey, setHasApiKey] = useState(false);
+  const [originalSourceUrl, setOriginalSourceUrl] = useState<string | null>(null);
 
   const activeImage = useMemo(
     () => images.find((i) => i.url === activeImageUrl),
@@ -95,16 +99,16 @@ export default function Home() {
   async function handleDownload() {
     if (!activeImage) return;
 
-    const imageProps = getImageProps({
+    const imageProps = {
       src: activeImage.url,
       alt: "Generated image",
       height: imageData.height,
       width: imageData.width,
       quality: 100,
-    });
+    };
 
     // Fetch the image
-    const response = await fetch(imageProps.props.src);
+    const response = await fetch(imageProps.src);
     const blob = await response.blob();
 
     const extension = blob.type.includes("jpeg")
@@ -164,7 +168,7 @@ export default function Home() {
                   )}
                   onClick={() => setActiveImageUrl(image.url)}
                 >
-                  <Image
+                  <img
                     width={imageData.width}
                     height={imageData.height}
                     style={{
@@ -183,25 +187,27 @@ export default function Home() {
           {!activeImage ? (
             <>
               <h1 className="mx-auto max-w-md text-center text-2xl text-balance text-white md:text-4xl">
-                Edit any image with a simple prompt
+                Edit any image with an AI and a simple prompt
               </h1>
 
               <div className="mt-8">
                 <ImageUploader
                   onUpload={({ url, width, height }) => {
                     setImageData({ width, height });
-                    setImages([{ url, version: 0 }]);
+                    setOriginalImageData({ width, height });
+                    setImages([{ url, version: 0, width, height }]);
                     setActiveImageUrl(url);
+                    setOriginalSourceUrl(url); // ЗАВЖДИ зберігаємо оригінальний S3 URL
                   }}
                 />
-              </div>
 
-              <div className="mt-8">
                 <SampleImages
                   onSelect={({ url, width, height }) => {
                     setImageData({ width, height });
-                    setImages([{ url, version: 0 }]);
+                    setOriginalImageData({ width, height });
+                    setImages([{ url, version: 0, width, height }]);
                     setActiveImageUrl(url);
+                    setOriginalSourceUrl(url); // ЗАВЖДИ зберігаємо оригінальний URL
                   }}
                 />
               </div>
@@ -209,18 +215,13 @@ export default function Home() {
           ) : (
             <div>
               <div className="group relative flex items-center justify-center overflow-hidden rounded-xl bg-gray-900">
-                <Image
-                  width={imageData.width}
-                  height={imageData.height}
-                  src={activeImage.url}
-                  style={{
-                    aspectRatio:
-                      adjustedImageDimensions.width /
-                      adjustedImageDimensions.height,
-                  }}
-                  alt="uploaded image"
-                  className="object-contain max-md:h-[50vh] md:max-h-[70vh]"
-                />
+                <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-gray-900">
+                  <img
+                    src={activeImage.url}
+                    alt="Active image"
+                    className="h-full w-full object-contain"
+                  />
+                </div>
 
                 <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-4 bg-gradient-to-t from-black/70 via-black/50 to-transparent p-4 pt-8">
                   <div className="flex items-center gap-4">
@@ -256,7 +257,7 @@ export default function Home() {
                       Editing your image...
                     </p>
                     <p className="text-sm text-gray-400">
-                      This can take up to 15 seconds.
+                      This can take up to 30 seconds.
                     </p>
                   </div>
                 )}
@@ -273,94 +274,44 @@ export default function Home() {
                         const prompt = formData.get("prompt") as string;
 
                         const generation = await generateImage({
-                          imageUrl: activeImage.url, // Use the currently active image
+                          imageUrl: originalSourceUrl!, // ПЕРЕДАВАТИ ОРИГІНАЛ, ніколи не activeImage.url
                           prompt,
-                          width: imageData.width,
-                          height: imageData.height,
+                          width: originalImageData.width,
+                          height: originalImageData.height,
                           userAPIKey: localStorage.getItem("togetherApiKey"),
                           model: selectedModel,
                         });
 
                         if (generation.success) {
-                          await preloadNextImage({
-                            src: generation.url,
-                            width: imageData.width,
-                            height: imageData.height,
-                          });
+                          const genWidth = generation.width ?? originalImageData.width;
+                          const genHeight = generation.height ?? originalImageData.height;
+
+                          setImageData({ width: genWidth, height: genHeight });
+
+                          await preloadNextImage(generation.url);
                           setImages((current) => [
                             ...current,
                             {
                               url: generation.url,
                               prompt,
                               version: current.length,
+                              width: genWidth,
+                              height: genHeight,
                             },
                           ]);
                           setActiveImageUrl(generation.url);
                           setPrompt("");
+                          // НЕ оновлюєш originalSourceUrl — залишаємо оригінал!
                         } else {
                           toast(generation.error);
                         }
                       });
                     }}
                   >
-                    <div className="mb-4">
-                      <label
-                        htmlFor="model-select"
-                        className="mb-2 block text-sm font-medium text-gray-300"
-                      >
-                        Model
-                      </label>
-                      <div className="relative">
-                        <select
-                          id="model-select"
-                          value={selectedModel}
-                          onChange={(e) =>
-                            setSelectedModel(
-                              e.target.value as typeof selectedModel,
-                            )
-                          }
-                          disabled={pending}
-                          className="w-full appearance-none rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                          <option value="black-forest-labs/FLUX.1-kontext-dev">
-                            Flux Kontext Dev
-                          </option>
-                          <option
-                            value="black-forest-labs/FLUX.1-kontext-pro"
-                            disabled={!hasApiKey}
-                          >
-                            Flux Kontext Pro{" "}
-                            {!hasApiKey && "(Together API key required)"}
-                          </option>
-                        </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
-                          <svg
-                            className="h-4 w-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M19 9l-7 7-7-7"
-                            />
-                          </svg>
-                        </div>
-                      </div>
-                      {!hasApiKey &&
-                        selectedModel ===
-                          "black-forest-labs/FLUX.1-kontext-pro" && (
-                          <p className="mt-1 text-xs text-amber-400">
-                            Pro model requires an API key. Please add your
-                            Together AI API key to use this model.
-                          </p>
-                        )}
-                    </div>
+                    
 
-                    <Fieldset className="relative rounded-xl bg-gray-900">
-                      <div className="pointer-events-none absolute inset-px rounded-xl ring ring-white/10" />
+                    <Fieldset className="relative mb-4 rounded-xl bg-gray-900">
+                      <div className="mb-4 pointer-events-none absolute inset-px rounded-xl ring ring-white/10" />
                       {/* Mobile: no autofocus */}
                       <input
                         type="text"
@@ -368,7 +319,7 @@ export default function Home() {
                         className="mr-2 w-full px-3 py-4 pr-14 focus-visible:outline-none disabled:opacity-50 md:hidden"
                         value={prompt}
                         onChange={(e) => setPrompt(e.target.value)}
-                        placeholder="Tell us the changes you want..."
+                        placeholder="Tell us the changes you want... The changes will apply only to V0 (original) image."
                         required
                       />
 
@@ -380,7 +331,7 @@ export default function Home() {
                         className="mr-2 w-full px-4 py-5 pr-14 focus-visible:outline-none disabled:opacity-50 max-md:hidden"
                         value={prompt}
                         onChange={(e) => setPrompt(e.target.value)}
-                        placeholder="Tell us the changes you want..."
+                        placeholder="Tell us the changes you want... The changes will apply only to V0 (original) image."
                         required
                       />
 
