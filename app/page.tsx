@@ -41,11 +41,10 @@ export default function Home() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [prompt, setPrompt] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
-  const [selectedModel, setSelectedModel] = useState<
+  const [selectedModel] = useState<
     | "black-forest-labs/FLUX.1-kontext-dev"
     | "black-forest-labs/FLUX.1-kontext-pro"
   >("black-forest-labs/FLUX.1-kontext-dev");
-  const [hasApiKey, setHasApiKey] = useState(false);
   const [originalSourceUrl, setOriginalSourceUrl] = useState<string | null>(null);
 
   const activeImage = useMemo(
