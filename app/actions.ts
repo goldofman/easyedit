@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
-import { getAdjustedDimensions } from "@/lib/get-adjusted-dimentions";
+import { getAdjustedDimensions } from "@/lib/get-adjusted-dimensions";
 import { getTogether } from "@/lib/get-together";
 import { getIPAddress, getRateLimiter } from "@/lib/rate-limiter";
 import { z } from "zod";

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Kulim_Park, Syne_Mono } from "next/font/google";
+import Link from "next/link";
 import "./globals.css";
 import { Logo } from "./Logo";
 import PlausibleProvider from "next-plausible";
@@ -66,17 +67,17 @@ export default function RootLayout({
       </head>
       <body className="flex min-h-screen w-full flex-col antialiased">
         <header className="relative flex p-4 text-center text-white">
-          <a
+          <Link
             rel="noopener noreferrer"
             href="/"
             className="absolute left-1/2 flex grow -translate-x-1/2 items-center gap-2 text-lg max-md:hidden"
           >
             <Logo />
             EdMyPic With AI
-          </a>
+          </Link>
 
           <div className="absolute top-4 right-4 flex gap-2">
-            <a
+            <Link
               href="/"
               target="_blank"
               rel="noopener noreferrer"
@@ -84,7 +85,7 @@ export default function RootLayout({
             >
               <PlusIcon />
               New Image
-            </a>
+            </Link>
           </div>
         </header>
 
@@ -97,13 +98,13 @@ export default function RootLayout({
         <footer className="flex flex-col items-center p-4 max-md:gap-4 md:flex-row md:justify-between">
           <p className="text-sm text-gray-400">
             Powered by{" "}
-            <a
+            <Link
               href="https://x.com/hjevago"
               target="_blank"
               className="text-gray-200 underline underline-offset-2"
             >
               Jevago
-            </a>
+            </Link>
           </p>
         </footer>
       </body>

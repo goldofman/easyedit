@@ -8,7 +8,6 @@ import Spinner from "./Spinner";
 import { preloadNextImage } from "@/lib/preload-next-image";
 import clsx from "clsx";
 import { SampleImages } from "./SampleImages";
-import { getAdjustedDimensions } from "@/lib/get-adjusted-dimentions";
 import { DownloadIcon } from "./components/DownloadIcon";
 import { toast } from "sonner";
 import { SuggestedPrompts } from "./suggested-prompts/SuggestedPrompts";
@@ -54,11 +53,6 @@ export default function Home() {
     [images, activeImageUrl],
   );
 
-  const adjustedImageDimensions = getAdjustedDimensions(
-    imageData.width,
-    imageData.height,
-  );
-
   useEffect(() => {
     function handleNewSession() {
       setImages([]);
@@ -69,32 +63,6 @@ export default function Home() {
       window.removeEventListener("new-image-session", handleNewSession);
     };
   }, []);
-
-  useEffect(() => {
-    const checkApiKey = () => {
-      const apiKey = localStorage.getItem("togetherApiKey");
-      const hasKey = !!apiKey;
-      setHasApiKey(hasKey);
-
-      // If Pro model is selected but no API key, switch to Dev model
-      if (!hasKey && selectedModel === "black-forest-labs/FLUX.1-kontext-pro") {
-        setSelectedModel("black-forest-labs/FLUX.1-kontext-dev");
-      }
-    };
-
-    checkApiKey();
-
-    // Listen for storage events (when localStorage changes in other tabs)
-    window.addEventListener("storage", checkApiKey);
-
-    // Poll for API key changes every 500ms to catch changes in the same tab
-    const interval = setInterval(checkApiKey, 500);
-
-    return () => {
-      window.removeEventListener("storage", checkApiKey);
-      clearInterval(interval);
-    };
-  }, [selectedModel]);
 
   async function handleDownload() {
     if (!activeImage) return;

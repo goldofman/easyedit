@@ -2,6 +2,11 @@ import Image from "next/image";
 
 const sampleImages = [
   {
+    url: "https://my-1st-aws-bucket-for-files-storage.s3.eu-north-1.amazonaws.com/edmypic/example/beautiful-2359121_1280.jpg",
+    height: 1280,
+    width: 1114,
+  },
+  {
     url: "https://my-1st-aws-bucket-for-files-storage.s3.eu-north-1.amazonaws.com/edmypic/example/ai-generated-8817541_1280.png",
     height: 1280,
     width: 717,
@@ -12,9 +17,9 @@ const sampleImages = [
     width: 1200,
   },
   {
-    url: "https://my-1st-aws-bucket-for-files-storage.s3.eu-north-1.amazonaws.com/edmypic/example/Close-up+of+Orchid+Flower.png",
-    width: 715,
-    height: 1200,
+    url: "https://my-1st-aws-bucket-for-files-storage.s3.eu-north-1.amazonaws.com/edmypic/example/2148364843.jpg",
+    width: 1200,
+    height: 1500,
   },
   {
     url: "https://my-1st-aws-bucket-for-files-storage.s3.eu-north-1.amazonaws.com/edmypic/example/Portrait+in+Red+and+Yellow.png",
